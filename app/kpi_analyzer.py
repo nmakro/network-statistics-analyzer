@@ -1,6 +1,7 @@
 import os
 import re
 from glob import glob
+
 import pandas as pd
 
 
@@ -32,6 +33,7 @@ class KpiAnalyzer(object):
             service_kpi = new_f.nlargest(3, ["total_bytes"]).reset_index().drop(["bytes_uplink", "bytes_downlink"], axis=1)
             service_kpi.insert(0, "interval_start_timestamp", [frame["interval_start_timestamp"][0]] * 3)
             service_kpi.insert(1, "interval_end_timestamp", [frame["interval_end_timestamp"][0]] * 3)
+
             service_kpi_list.append(service_kpi)
         return service_kpi_list
 

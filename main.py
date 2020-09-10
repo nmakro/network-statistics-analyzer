@@ -2,8 +2,10 @@ from app import create_app, db
 from app.kpi_analyzer import KpiAnalyzer
 import os
 
+app = create_app()
+
 if __name__ == "__main__":
-    app = create_app()
+
     path = os.getcwd()
     kpi_analyzer = KpiAnalyzer(os.path.join(path, "static"))
     service_kpis = kpi_analyzer.get_service_kpis()
@@ -13,4 +15,5 @@ if __name__ == "__main__":
         for service_kpi, cell_kpi in zip(service_kpis, cell_kpis):
             service_kpi.to_sql("service_kpi", con=db.engine, if_exists="append", index=False)
             cell_kpi.to_sql("cell_kpi", con=db.engine, if_exists="append", index=False)
-    # app.run()
+
+    app.run()
