@@ -7,9 +7,10 @@ if __name__ == "__main__":
     path = os.getcwd()
     kpi_analyzer = KpiAnalyzer(os.path.join(path, "static"))
     service_kpis = kpi_analyzer.get_service_kpis()
+    cell_kpis = kpi_analyzer.get_cell_kpis()
 
     with app.app_context():
-        for service_kpi in service_kpis:
+        for service_kpi, cell_kpi in zip(service_kpis, cell_kpis):
             service_kpi.to_sql("service_kpi", con=db.engine, if_exists="append", index=False)
-        kpi_analyzer.get_cell_kpis()
+            cell_kpi.to_sql("cell_kpi", con=db.engine, if_exists="append", index=False)
     # app.run()

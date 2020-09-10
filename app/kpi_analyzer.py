@@ -25,7 +25,6 @@ class KpiAnalyzer(object):
     def get_service_kpis(self) -> list:
         service_kpi_list = []
         for timestamp in self.unique_timestamps:
-
             frame = pd.concat((pd.read_csv(f) for f in self.files_per_timestamp[timestamp]), ignore_index=True)
 
             new_f = frame.groupby(by=["service_id"])[["bytes_uplink", "bytes_downlink"]].sum()
@@ -37,14 +36,16 @@ class KpiAnalyzer(object):
         return service_kpi_list
 
     def get_cell_kpis(self) -> list:
-        service_kpi_list = []
+        cell_kpi_list = []
         for timestamp in self.unique_timestamps:
             frame = pd.concat((pd.read_csv(f) for f in self.files_per_timestamp[timestamp]), ignore_index=True)
 
-            new_f = frame.groupby('cell_id')['msisdn'].apply(lambda x: pd.unique(x))
-            new_f["total_bytes"] = new_f["bytes_uplink"] + new_f["bytes_downlink"]
-            service_kpi = new_f.nlargest(3, ["total_bytes"]).reset_index().drop(["bytes_uplink", "bytes_downlink"], axis=1)
-            service_kpi.insert(0, "interval_start_timestamp", [frame["interval_start_timestamp"][0]] * 3)
-            service_kpi.insert(1, "interval_end_timestamp", [frame["interval_end_timestamp"][0]] * 3)
-            service_kpi_list.append(service_kpi)
-        return service_kpi_list
+            new_f = frame.groupby("cell_id", as_index=False).agg({"msisdn": pd.Series.nunique})
+            cell_kpi = new_f.nlargest(3, ["msisdn"])
+            cell_kpi.insert(0, "interval_start_timestamp", [frame["interval_start_timestamp"][0]] * 3)
+            cell_kpi.insert(0, "interval_end_timestamp", [frame["interval_end_timestamp"][0]] * 3)
+            cell_kpi.rename(columns={"msisdn": "number_of_unique_users"}, inplace=True)
+            cell_kpi.reset_index(inplace=True, drop=True)
+
+            cell_kpi_list.append(cell_kpi)
+        return cell_kpi_list
