@@ -15,6 +15,7 @@ def create_app():
     db.init_app(app)
 
     from .api import bp
+
     app.register_blueprint(bp, url_prefix="/api/v1/")
 
     return app
