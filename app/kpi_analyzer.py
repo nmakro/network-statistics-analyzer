@@ -60,12 +60,7 @@ class KpiAnalyzer(object):
             service_kpi.insert(
                 1, "interval_end_timestamp", [frame["interval_end_timestamp"][0]] * 3
             )
-            dif = get_minute_difference(frame["interval_end_timestamp"][0], frame["interval_start_timestamp"][0])
-
-            if dif == 5:
-                interval = dif
-            else:
-                interval = 1
+            interval = get_minute_difference(frame["interval_end_timestamp"][0], frame["interval_start_timestamp"][0])
             service_kpi.insert(4, "interval", [interval] * 3)
 
             service_kpi_list.append(service_kpi)
@@ -92,11 +87,7 @@ class KpiAnalyzer(object):
                 0, "interval_end_timestamp", [frame["interval_end_timestamp"][0]] * 3
             )
             cell_kpi.rename(columns={"msisdn": "number_of_unique_users"}, inplace=True)
-            dif = get_minute_difference(frame["interval_end_timestamp"][0], frame["interval_start_timestamp"][0])
-            if dif == 5:
-                interval = dif
-            else:
-                interval = 1
+            interval = get_minute_difference(frame["interval_end_timestamp"][0], frame["interval_start_timestamp"][0])
             cell_kpi.insert(4, "interval", [interval] * 3)
             cell_kpi.reset_index(inplace=True, drop=True)
 

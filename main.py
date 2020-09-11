@@ -1,13 +1,11 @@
 from app import create_app, db
 from app.kpi_analyzer import KpiAnalyzer
-import os
 
 app = create_app()
 
 if __name__ == "__main__":
 
-    path = os.getcwd()
-    kpi_analyzer = KpiAnalyzer(os.path.join(path, "static"))
+    kpi_analyzer = KpiAnalyzer()
     service_kpis = kpi_analyzer.get_service_kpis()
     cell_kpis = kpi_analyzer.get_cell_kpis()
 
